@@ -1,0 +1,78 @@
+/* --- GLOBAL VISIBILITY OVERRIDE --- */
+:root {
+  --void: #000000;
+  --stark: #ffffff;
+  --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--void);
+  color: var(--stark);
+  font-family: var(--ios-font);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Force all text to be Stark White and Opaque */
+h1, h2, h3, h4, h5, h6, p, span, label, div {
+  color: var(--stark) !important;
+  opacity: 1 !important;
+}
+
+/* Glass Panel - Darker & More Defined */
+.glass-panel {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 2.5rem;
+}
+
+/* Inputs: Black Background, White Text, White Border */
+.form-control {
+  background: var(--void) !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  color: var(--stark) !important;
+  border-radius: 12px !important;
+  padding: 14px !important;
+  font-weight: 600 !important;
+}
+
+.form-control:focus {
+  border-color: var(--stark) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) !important;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* THE BUTTON FIX: Solid White Block with Solid Black Text */
+.btn-stark {
+  background-color: var(--stark) !important;
+  color: var(--void) !important; /* This makes the text visible */
+  border: none !important;
+  border-radius: 14px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px !important;
+  width: 100%;
+  transition: transform 0.2s ease;
+  display: block;
+  text-align: center;
+}
+
+.btn-stark:hover {
+  transform: scale(1.02);
+  background-color: #f0f0f0 !important;
+}
+
+/* Links */
+.stark-link {
+  color: var(--stark) !important;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
