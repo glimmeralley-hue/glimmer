@@ -10,6 +10,7 @@ import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import AddProduct from './components/Addproduct';
 import Feed from './components/Feed';
+import Landing from './components/Landing';
 
 const AppContent = () => {
   const location = useLocation();
@@ -21,7 +22,7 @@ const AppContent = () => {
       {shouldShowNavbar && <Navbar />}
       <div className={shouldShowNavbar ? "container mt-4" : ""}>
        <Routes>
-  <Route path="/" element={<Signin />} />
+  <Route path="/" element={<Landing />} />
   <Route path="/signin" element={<Signin />} />
   <Route path="/signup" element={<Signup />} />
   <Route path="/dashboard" element={<Dashboard />} />

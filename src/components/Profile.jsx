@@ -16,32 +16,31 @@ const Profile = () => {
 
     const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
     
+    // Determine if we are looking at our own profile or someone else's
     const isOwnProfile = !urlEmail || urlEmail === loggedInUser.email;
     const targetEmail = urlEmail || loggedInUser.email;
+
+    const fetchProfileData = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`https://glimmer.alwaysdata.net/api/get_user/${targetEmail}`);
+            setProfileData(res.data);
+            setBio(res.data.bio || "");
+            setPhone(res.data.phone || "");
+        } catch (err) {
+            setMsg("USER_OFFLINE_OR_NOT_FOUND");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (!loggedInUser.email) {
             navigate("/signin");
             return;
         }
-
-        const fetchProfileData = async () => {
-            setLoading(true);
-            try {
-                // FIXED: Hits the get_user endpoint to fetch Bio/Phone/Pic
-                const res = await axios.get(`https://glimmer.alwaysdata.net/api/get_user/${targetEmail}`);
-                setProfileData(res.data);
-                setBio(res.data.bio || "");
-                setPhone(res.data.phone || "");
-            } catch (err) {
-                setMsg("USER_OFFLINE_OR_NOT_FOUND");
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProfileData();
-    }, [targetEmail, navigate, loggedInUser.email]);
+    }, [targetEmail]);
 
     const handleImageUpload = async (e) => {
         if (!isOwnProfile) return;
@@ -50,14 +49,16 @@ const Profile = () => {
 
         const formData = new FormData();
         formData.append("email", loggedInUser.email);
-        formData.append("image", file);
+        formData.append("image", file); // Matches request.files.get("image")
+        formData.append("bio", bio);    // Send current bio/phone so they don't get wiped
+        formData.append("phone", phone);
 
         setLoading(true);
         try {
-            // FIXED: Uses the unified update_profile route
             const res = await axios.post("https://glimmer.alwaysdata.net/api/update_profile", formData);
             if (res.data.status === "success") {
-                window.location.reload(); // Refresh to sync everywhere
+                setMsg("AVATAR_UPDATED");
+                fetchProfileData(); // Refresh data to show new image
             }
         } catch (err) {
             setMsg("UPLOAD_FAILED");
@@ -70,7 +71,6 @@ const Profile = () => {
         setLoading(true);
         setMsg("");
         try {
-            // FIXED: Switched from JSON to FormData so Python request.form.get() works
             const fd = new FormData();
             fd.append("email", loggedInUser.email);
             fd.append("phone", phone);
@@ -79,7 +79,7 @@ const Profile = () => {
             const res = await axios.post("https://glimmer.alwaysdata.net/api/update_profile", fd);
 
             if (res.data.status === "success") {
-                // Update Local Storage so Dashboard and Feed see the change
+                // Important: Update LocalStorage so the whole app knows the new info
                 const updatedUser = { ...loggedInUser, bio: bio, phone: phone };
                 localStorage.setItem("user", JSON.stringify(updatedUser));
                 
@@ -88,7 +88,7 @@ const Profile = () => {
                 setMsg("CHANGES_LOCKED_IN");
             }
         } catch (err) {
-            setMsg("ERROR_UPDATING_DATABASE");
+            setMsg("DATABASE_ERROR");
         } finally {
             setLoading(false);
         }
@@ -101,17 +101,20 @@ const Profile = () => {
         <div className="container d-flex justify-content-center align-items-center py-5" style={{ minHeight: '80vh' }}>
             <div className="glass-panel text-center p-5" style={{ width: '100%', maxWidth: '450px', borderTop: '4px solid #fff' }}>
                 
-                {/* AVATAR */}
+                {/* AVATAR SECTION */}
                 <div className="mb-4 position-relative d-inline-block">
                     <img 
                         src={`https://glimmer.alwaysdata.net/static/images/${profileData.profile_pic || 'default.png'}`} 
                         className="rounded-circle border border-2 border-white shadow-lg"
                         style={{ width: '130px', height: '130px', objectFit: 'cover', cursor: isOwnProfile ? 'pointer' : 'default' }}
-                        alt=""
+                        alt="Profile"
                         onClick={() => isOwnProfile && fileInputRef.current.click()}
                     />
                     {isOwnProfile && (
-                        <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
+                        <div className="mt-2">
+                           <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
+                           <small className="text-white opacity-30 fw-black" style={{fontSize: '10px'}}>TAP PHOTO TO CHANGE</small>
+                        </div>
                     )}
                 </div>
 
@@ -124,7 +127,7 @@ const Profile = () => {
                     {isEditing ? (
                         <>
                             <label className="text-white opacity-30 small fw-black mb-2">PHONE</label>
-                            <input type="text" className="form-control bg-white bg-opacity-5 border-0 text-white mb-3 shadow-none" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                            <input type="text" className="form-control bg-white bg-opacity-5 border-0 text-white mb-3 shadow-none py-2" value={phone} onChange={(e) => setPhone(e.target.value)} />
                             
                             <label className="text-white opacity-30 small fw-black mb-2">BIO</label>
                             <textarea className="form-control bg-white bg-opacity-5 border-0 text-white mb-4 shadow-none" value={bio} onChange={(e) => setBio(e.target.value)} rows="3" style={{ resize: 'none' }} />
