@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
@@ -8,6 +10,7 @@ const SignIn = () => {
     const [msg, setMsg] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,12 +23,36 @@ const SignIn = () => {
 
         try {
             // Using your specified endpoint
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/signin", formData);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/dashboard");
+            const res = await axios.post(`${API_URL}/signin`, formData);
+            
+            console.log("Server response:", res.data);
+            console.log("Response status:", res.data.status);
+            
+            if (res.data.status === "success") {
+                login(res.data.user);
+                navigate("/dashboard");
+            } else {
+                setLoading(false);
+                console.log("Login failed - server response:", res.data);
+                setMsg(res.data.message || "INVALID_CREDENTIALS");
+            }
         } catch (err) {
             setLoading(false);
-            setMsg("INVALID_CREDENTIALS");
+            console.error("Signin Error:", err);
+            console.error("Error response:", err.response);
+            console.error("Error status:", err.response?.status);
+            console.error("Error data:", err.response?.data);
+            
+            if (err.code === "ECONNREFUSED" || err.code === "ERR_NETWORK") {
+                setMsg("Cannot connect to server. Please ensure the backend is running on http://localhost:5000");
+            } else if (err.response) {
+                // Show more specific server error
+                const errorMessage = err.response.data?.message || err.response.data?.error || "Server error occurred";
+                const statusCode = err.response.status || "Unknown";
+                setMsg(`Server error (${statusCode}): ${errorMessage}`);
+            } else {
+                setMsg("Network error. Please check your connection and try again.");
+            }
         }
     };
 

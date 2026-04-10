@@ -1,71 +1,103 @@
-# Getting Started with Create React App
+# Glimmer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern social media and marketplace application built with React and Flask.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Social Feed**: Post thoughts (spills), images, and music
+- **Real-time Messaging**: WebSocket-based chat system
+- **Marketplace**: Buy and sell products
+- **User Profiles**: Customizable user profiles
+- **Clock System**: Like/interact with posts and replies
 
-### `npm start`
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Prerequisites
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js (v14 or higher)
+- Python (v3.8 or higher)
+- npm or yarn
 
-### `npm test`
+### Quick Start (Recommended)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Windows Users:**
+```bash
+setup_and_start.bat
+```
 
-### `npm run build`
+**Manual Setup:**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Install Python dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. **Run database migration:**
+   ```bash
+   python migrate_db.py
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Start the backend server:**
+   ```bash
+   python app.py
+   ```
+   
+   The backend will start on `http://localhost:5000`
 
-### `npm run eject`
+4. **Install Node.js dependencies (first time only):**
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5. **Start the React app:**
+   ```bash
+   npm start
+   ```
+   
+   The frontend will start on `http://localhost:3000`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Database
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The app uses SQLite for local development. The database (`glimmer.db`) will be automatically created when you start the backend server.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### API Endpoints
 
-## Learn More
+- `POST /api/signin` - User authentication
+- `POST /api/signup` - User registration
+- `GET /api/get_thoughts` - Get social feed
+- `POST /api/add_thought` - Post a new thought
+- `GET /api/get_products` - Get marketplace products
+- `POST /api/add_product` - Add a new product
+- `GET /api/get_conversations/<email>` - Get user conversations
+- `POST /api/send_message` - Send a message
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Socket.IO Events
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `connect` - Client connects to server
+- `join_user` - User joins messaging system
+- `send_message` - Send real-time message
+- `receive_message` - Receive real-time message
 
-### Code Splitting
+## Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The app is configured to use a local development server by default. All API calls will be routed to `http://localhost:5000` in development mode.
 
-### Analyzing the Bundle Size
+## File Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+glimmer/
+  src/
+    components/     # React components
+    config/         # API configuration
+  static/
+    images/         # User uploaded images
+  app.py           # Flask backend server
+  requirements.txt # Python dependencies
+  glimmer.db       # SQLite database (auto-generated)
+```
 
-### Making a Progressive Web App
+## Troubleshooting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# glimmer
+- **Backend not starting**: Make sure Python 3.8+ is installed and all requirements are met
+- **Frontend not connecting**: Ensure the backend is running on port 5000 before starting the frontend
+- **Database errors**: Delete `glimmer.db` and restart the backend to recreate the database

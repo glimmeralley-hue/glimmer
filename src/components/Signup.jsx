@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from '../config/api';
 
 const Signup = () => {
     const [username, setUsername] = useState("");
@@ -26,16 +27,29 @@ const Signup = () => {
             formdata.append("password", password);
             formdata.append("phone", phone);
 
-            const response = await axios.post("https://glimmer.alwaysdata.net/api/signup", formdata);
+            const res = await axios.post(`${API_URL}/signup`, formdata);
 
-            setStatus({ type: "success", msg: "Account Created." });
-            setLoading(false);
-            
-            // Redirect after success
-            setTimeout(() => navigate('/signin'), 2000);
+            if (res.data.status === "success") {
+                setStatus({ type: "success", msg: res.data.message || "Account Created." });
+                setLoading(false);
+                
+                // Redirect after success
+                setTimeout(() => navigate('/signin'), 2000);
+            } else {
+                setLoading(false);
+                setStatus({ type: "error", msg: res.data.message || "Signup Failed." });
+            }
         } catch (err) {
             setLoading(false);
-            setStatus({ type: "error", msg: err.response?.data?.message || "Signup Failed." });
+            console.error("Signup Error:", err);
+            
+            if (err.code === "ECONNREFUSED" || err.code === "ERR_NETWORK") {
+                setStatus({ type: "error", msg: "Cannot connect to server. Please ensure the backend is running on http://localhost:5000" });
+            } else if (err.response) {
+                setStatus({ type: "error", msg: err.response.data?.message || "Server error occurred" });
+            } else {
+                setStatus({ type: "error", msg: "Network error. Please check your connection and try again." });
+            }
         }
     };
 
