@@ -85,6 +85,16 @@ def init_db():
         )
     """)
     c.execute("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_email TEXT NOT NULL,
+            recipient_email TEXT NOT NULL,
+            content TEXT NOT NULL,
+            is_read INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    c.execute("""
         CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             checkout_id TEXT UNIQUE NOT NULL,
@@ -374,6 +384,76 @@ def check_payment(checkout_id):
 
     conn.close()
     return jsonify({"status": payment["status"], "reason": payment["reason"]})
+
+
+@app.route("/api/send_message", methods=["POST"])
+def send_message():
+    sender = request.form.get("sender_email", "").strip().lower()
+    recipient = request.form.get("recipient_email", "").strip().lower()
+    content = request.form.get("content", "").strip()
+    if not sender or not recipient or not content:
+        return jsonify({"message": "Missing fields."}), 400
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO messages (sender_email, recipient_email, content) VALUES (?,?,?)",
+        (sender, recipient, content),
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "success"})
+
+
+@app.route("/api/get_messages/<email1>/<email2>", methods=["GET"])
+def get_messages(email1, email2):
+    conn = get_db()
+    rows = conn.execute("""
+        SELECT * FROM messages
+        WHERE (sender_email=? AND recipient_email=?) OR (sender_email=? AND recipient_email=?)
+        ORDER BY id ASC
+    """, (email1, email2, email2, email1)).fetchall()
+    conn.execute("""
+        UPDATE messages SET is_read=1
+        WHERE recipient_email=? AND sender_email=? AND is_read=0
+    """, (email1, email2))
+    conn.commit()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
+
+
+@app.route("/api/get_conversations/<email>", methods=["GET"])
+def get_conversations(email):
+    conn = get_db()
+    rows = conn.execute("""
+        SELECT DISTINCT
+            CASE WHEN sender_email=? THEN recipient_email ELSE sender_email END AS other_email
+        FROM messages
+        WHERE sender_email=? OR recipient_email=?
+    """, (email, email, email)).fetchall()
+
+    conversations = []
+    for row in rows:
+        other = row["other_email"]
+        user_row = conn.execute("SELECT username, profile_pic FROM users WHERE email=?", (other,)).fetchone()
+        last_msg = conn.execute("""
+            SELECT content, created_at FROM messages
+            WHERE (sender_email=? AND recipient_email=?) OR (sender_email=? AND recipient_email=?)
+            ORDER BY id DESC LIMIT 1
+        """, (email, other, other, email)).fetchone()
+        unread = conn.execute("""
+            SELECT COUNT(*) as cnt FROM messages
+            WHERE sender_email=? AND recipient_email=? AND is_read=0
+        """, (other, email)).fetchone()
+        conversations.append({
+            "other_email": other,
+            "username": user_row["username"] if user_row else other,
+            "profile_pic": user_row["profile_pic"] if user_row else "default.png",
+            "last_message": last_msg["content"] if last_msg else "",
+            "unread_count": unread["cnt"] if unread else 0,
+        })
+
+    conn.close()
+    conversations.sort(key=lambda x: x["last_message"], reverse=False)
+    return jsonify(conversations)
 
 
 @app.route("/", defaults={"path": ""})

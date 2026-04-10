@@ -39,6 +39,9 @@ const Navbar = () => {
                     <Link to="/dashboard" className={`${isActive('/dashboard')} fw-bold text-decoration-none small transition-all`}>
                         SHOP
                     </Link>
+                    <Link to="/messages" className={`${isActive('/messages')} fw-bold text-decoration-none small transition-all`}>
+                        MESSAGES
+                    </Link>
                     
                     {/* ACTION BUTTON */}
                     <Link to="/add-product" className="btn btn-sm fw-black px-3" style={{ 
@@ -63,10 +66,10 @@ const Navbar = () => {
                                 cursor: 'pointer',
                                 transition: 'transform 0.2s ease'
                             }}
-                            // FIX: Force navigation to the specific email route
                             onClick={() => navigate(`/profile/${user.email}`)}
                             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23444'/%3E%3Ccircle cx='16' cy='13' r='5' fill='%23888'/%3E%3Cellipse cx='16' cy='28' rx='9' ry='7' fill='%23888'/%3E%3C/svg%3E"; }}
                             alt="pfp"
                         />
                         <button 

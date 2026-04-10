@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -147,8 +147,10 @@ const Profile = () => {
                                 <small className="text-white opacity-30 fw-black d-block mb-1">BIO</small>
                                 <div className="text-white opacity-80" style={{ fontStyle: 'italic' }}>{profileData.bio || "NO BIO YET."}</div>
                             </div>
-                            {isOwnProfile && (
+                            {isOwnProfile ? (
                                 <button onClick={() => setIsEditing(true)} className="btn btn-outline-light w-100 btn-sm fw-black rounded-pill py-2 opacity-50 hover-opacity-100">EDIT PROFILE</button>
+                            ) : (
+                                <Link to={`/messages/${profileData.email}`} className="btn bg-white text-black w-100 fw-black rounded-pill py-2 text-decoration-none">MESSAGE</Link>
                             )}
                         </>
                     )}

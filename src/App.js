@@ -11,6 +11,7 @@ import Profile from './components/Profile';
 import AddProduct from './components/Addproduct';
 import Feed from './components/Feed';
 import Landing from './components/Landing';
+import Messages from './components/Messages';
 
 const AppContent = () => {
   const location = useLocation();
@@ -35,6 +36,8 @@ const AppContent = () => {
   
   <Route path='/add-product' element={<AddProduct/>}/>
   <Route path='/feed' element={<Feed/>}/>
+  <Route path='/messages' element={<Messages/>}/>
+  <Route path='/messages/:email' element={<Messages/>}/>
   <Route path="/profile/:email" element={<Profile />} />
 <Route path="/profile" element={<Profile />} /> 
 
