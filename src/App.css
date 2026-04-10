@@ -3,29 +3,83 @@
   --void: #000000;
   --stark: #ffffff;
   --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  --bg: #000000;
+  --glass-bg: rgba(15,15,15,0.95);
+  --glass-border: rgba(255,255,255,0.3);
+  --accent: #ffffff;
+  --accent-text: #000000;
+}
+
+[data-theme="midnight"] {
+  --bg: #05050f;
+  --glass-bg: rgba(10,8,28,0.96);
+  --glass-border: rgba(120,100,255,0.35);
+  --accent: #9b8ff7;
+  --accent-text: #ffffff;
+}
+[data-theme="forest"] {
+  --bg: #030e06;
+  --glass-bg: rgba(4,14,7,0.96);
+  --glass-border: rgba(0,200,80,0.3);
+  --accent: #00c853;
+  --accent-text: #000000;
+}
+[data-theme="rose"] {
+  --bg: #0f0408;
+  --glass-bg: rgba(18,4,10,0.96);
+  --glass-border: rgba(255,80,130,0.3);
+  --accent: #ff4d8d;
+  --accent-text: #ffffff;
+}
+[data-theme="ocean"] {
+  --bg: #020a10;
+  --glass-bg: rgba(2,12,22,0.96);
+  --glass-border: rgba(0,200,255,0.25);
+  --accent: #00bcd4;
+  --accent-text: #000000;
 }
 
 body {
-  background-color: var(--void);
+  background-color: var(--bg);
   color: var(--stark);
   font-family: var(--ios-font);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease;
 }
 
-/* Force all text to be Stark White and Opaque */
+/* Force all text to be Stark White — EXCEPT dark-text overrides */
 h1, h2, h3, h4, h5, h6, p, span, label, div {
   color: var(--stark) !important;
   opacity: 1 !important;
 }
 
-/* Glass Panel - Darker & More Defined */
+/* Message bubble dark text override */
+.msg-bubble-sent p,
+.msg-bubble-sent span {
+  color: #000000 !important;
+}
+
+/* Glass Panel */
 .glass-panel {
-  background: rgba(15, 15, 15, 0.95);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 2.5rem;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+/* Theme accent helpers */
+.theme-accent-bg {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+}
+.theme-accent-text {
+  color: var(--accent) !important;
+}
+.theme-accent-border {
+  border-color: var(--accent) !important;
 }
 .glimmer-audio-block {
     background: #000;

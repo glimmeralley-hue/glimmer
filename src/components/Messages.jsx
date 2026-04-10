@@ -205,16 +205,16 @@ const Messages = () => {
                                 return (
                                     <div key={msg.id} className={`d-flex ${isMe ? 'justify-content-end' : 'justify-content-start'}`}>
                                         <div
+                                            className={isMe ? 'msg-bubble-sent' : ''}
                                             style={{
                                                 maxWidth: '65%',
                                                 padding: '10px 16px',
                                                 borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                                                 background: isMe ? '#ffffff' : 'rgba(255,255,255,0.1)',
-                                                color: isMe ? '#000' : '#fff',
                                             }}
                                         >
-                                            <p className="mb-0 fw-medium" style={{ fontSize: '14px', wordBreak: 'break-word' }}>{msg.content}</p>
-                                            <p className="mb-0 mt-1 fw-bold" style={{ fontSize: '9px', opacity: 0.4, textAlign: isMe ? 'right' : 'left' }}>
+                                            <p className="mb-0 fw-medium" style={{ fontSize: '14px', wordBreak: 'break-word', color: isMe ? '#000' : '#fff' }}>{msg.content}</p>
+                                            <p className="mb-0 mt-1 fw-bold" style={{ fontSize: '9px', opacity: 0.5, textAlign: isMe ? 'right' : 'left', color: isMe ? '#333' : '#fff' }}>
                                                 {msg.created_at ? new Date(msg.created_at.replace(' ', 'T')).toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit', hour12: true }) : ''}
                                             </p>
                                         </div>

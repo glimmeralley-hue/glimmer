@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
@@ -13,9 +13,11 @@ import Feed from './components/Feed';
 import Landing from './components/Landing';
 import Messages from './components/Messages';
 import Cart from './components/Cart';
+import Settings from './components/Settings';
+import Journal from './components/Journal';
 
 const noNavbarPaths = ['/', '/signin', '/signup'];
-const fullWidthPaths = ['/messages'];
+const fullWidthPaths = ['/messages', '/journal'];
 
 const AppContent = () => {
   const location = useLocation();
@@ -38,6 +40,8 @@ const AppContent = () => {
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:email" element={<Messages />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/journal" element={<Journal />} />
         </Routes>
       </div>
     </>
@@ -45,6 +49,13 @@ const AppContent = () => {
 };
 
 function App() {
+  useEffect(() => {
+    const saved = localStorage.getItem('glimmer_theme') || 'void';
+    if (saved && saved !== 'void') {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }, []);
+
   return (
     <Router>
       <AppContent />

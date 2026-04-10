@@ -103,6 +103,16 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS journals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_email TEXT NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            mood TEXT DEFAULT '✨',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -454,6 +464,65 @@ def get_conversations(email):
     conn.close()
     conversations.sort(key=lambda x: x["last_message"], reverse=False)
     return jsonify(conversations)
+
+
+@app.route("/api/get_journals/<email>", methods=["GET"])
+def get_journals(email):
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT * FROM journals WHERE user_email=? ORDER BY created_at DESC", (email,))
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return jsonify(rows)
+
+
+@app.route("/api/add_journal", methods=["POST"])
+def add_journal():
+    data = request.get_json()
+    user_email = data.get("user_email")
+    title = data.get("title", "").strip()
+    content = data.get("content", "").strip()
+    mood = data.get("mood", "✨")
+    if not user_email or not title or not content:
+        return jsonify({"error": "Missing fields"}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("INSERT INTO journals (user_email, title, content, mood) VALUES (?,?,?,?)",
+              (user_email, title, content, mood))
+    conn.commit()
+    new_id = c.lastrowid
+    conn.close()
+    return jsonify({"id": new_id, "message": "Journal entry created"})
+
+
+@app.route("/api/update_journal/<int:journal_id>", methods=["PUT"])
+def update_journal(journal_id):
+    data = request.get_json()
+    user_email = data.get("user_email")
+    title = data.get("title", "").strip()
+    content = data.get("content", "").strip()
+    mood = data.get("mood", "✨")
+    if not user_email or not title or not content:
+        return jsonify({"error": "Missing fields"}), 400
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("UPDATE journals SET title=?, content=?, mood=? WHERE id=? AND user_email=?",
+              (title, content, mood, journal_id, user_email))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Updated"})
+
+
+@app.route("/api/delete_journal/<int:journal_id>", methods=["DELETE"])
+def delete_journal(journal_id):
+    data = request.get_json()
+    user_email = data.get("user_email")
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("DELETE FROM journals WHERE id=? AND user_email=?", (journal_id, user_email))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Deleted"})
 
 
 @app.route("/", defaults={"path": ""})

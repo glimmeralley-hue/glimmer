@@ -4,8 +4,6 @@ import { addToCart, getCart } from '../utils/cart';
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
-    const [thought, setThought] = useState("");
-    const [musicUrl, setMusicUrl] = useState(""); // NEW: Music link state
     const [loading, setLoading] = useState(true);
 
     // MODAL & PAYMENT STATES
@@ -43,23 +41,6 @@ const Dashboard = () => {
         fetchAssets();
         if (user.phone) setInputPhone(user.phone);
     }, []);
-
-    const handleSpill = async (e) => {
-        e.preventDefault();
-        if (!thought) return;
-        try {
-            const formdata = new FormData();
-            formdata.append("email", user.email);
-            formdata.append("content", thought);
-            formdata.append("music_url", musicUrl); // NEW: Sending music to backend
-            await axios.post("/api/add_thought", formdata);
-            setThought("");
-            setMusicUrl("");
-            alert("SPILL_SENT");
-        } catch (err) {
-            alert("SPILL_FAILED");
-        }
-    };
 
     const initiatePayment = async () => {
         if (!inputPhone) return alert("PHONE_REQUIRED");
@@ -118,34 +99,8 @@ const Dashboard = () => {
     return (
         <div className="container" style={{ paddingTop: '60px' }}>
             <div className="row g-5">
-                {/* SPILLS SECTION */}
-                <div className="col-lg-5">
-                    <div className="glass-panel p-4 mb-4" style={{ borderTop: '4px solid #fff' }}>
-                        <h4 className="fw-black text-white mb-4">SPILLS</h4>
-                        <form onSubmit={handleSpill}>
-                            <textarea
-                                className="form-control mb-3"
-                                rows="3"
-                                placeholder="LET IT OUT..."
-                                value={thought}
-                                onChange={(e) => setThought(e.target.value)}
-                                style={{ backgroundColor: 'rgba(255,255,255,0.02)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', textTransform: 'uppercase' }}
-                            />
-                            <input
-                                type="text"
-                                className="form-control mb-4 small"
-                                placeholder="MUSIC LINK (OPTIONAL)"
-                                value={musicUrl}
-                                onChange={(e) => setMusicUrl(e.target.value)}
-                                style={{ backgroundColor: 'transparent', color: '#00e5ff', border: '1px solid rgba(0,229,255,0.2)', fontSize: '12px' }}
-                            />
-                            <button type="submit" className="btn w-100 py-3 fw-black bg-white text-black">SPILL</button>
-                        </form>
-                    </div>
-                </div>
-
                 {/* HOTTEST ASSETS SECTION */}
-                <div className="col-lg-7">
+                <div className="col-lg-12">
                     <h4 className="fw-black text-white mb-4">HOTTEST ASSETS</h4>
                     <div className="d-flex flex-column gap-3">
                         {loading ? <p className="text-white opacity-20 fw-black">SYNCING...</p> :
