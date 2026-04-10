@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { addToCart, getCart } from '../utils/cart';
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
@@ -13,7 +14,16 @@ const Dashboard = () => {
     const [inputPhone, setInputPhone] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
+    const [cartItems, setCartItems] = useState(getCart());
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    useEffect(() => {
+        const sync = () => setCartItems(getCart());
+        window.addEventListener('cartUpdate', sync);
+        return () => window.removeEventListener('cartUpdate', sync);
+    }, []);
+
+    const isInCart = (id) => cartItems.some(i => i.id === id);
 
     const fetchAssets = async () => {
         try {
@@ -150,7 +160,16 @@ const Dashboard = () => {
                                                 <p className="text-white opacity-60 small mb-0 fw-bold">KES {Number(p.product_cost).toLocaleString()}</p>
                                             </div>
                                         </div>
-                                        <button onClick={() => setViewItem(p)} className="btn btn-outline-light btn-sm rounded-pill px-4 fw-black">VIEW</button>
+                                        <div className="d-flex gap-2">
+                                            <button onClick={() => setViewItem(p)} className="btn btn-outline-light btn-sm rounded-pill px-3 fw-black">VIEW</button>
+                                            <button
+                                                onClick={() => addToCart(p)}
+                                                className="btn btn-sm rounded-pill px-3 fw-black"
+                                                style={{ background: isInCart(p.id) ? 'rgba(255,255,255,0.15)' : '#fff', color: isInCart(p.id) ? '#fff' : '#000', fontSize: '11px' }}
+                                            >
+                                                {isInCart(p.id) ? '✓ ADDED' : '+ CART'}
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                     </div>

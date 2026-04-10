@@ -36,7 +36,7 @@ const Feed = () => {
 
     const formatTime = (dateStr) => {
         if (!dateStr) return "JUST NOW";
-        const date = new Date(dateStr.replace(' ', 'T'));
+        const date = new Date(dateStr.replace(' ', 'T') + 'Z');
         if (isNaN(date.getTime())) return "RECENT"; 
         return date.toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit', hour12: true });
     };
