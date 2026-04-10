@@ -54,7 +54,7 @@ const Navbar = () => {
                     {/* USER SECTION */}
                     <div className="d-flex align-items-center gap-3 ms-2 border-start border-white border-opacity-10 ps-4">
                         <img 
-                            src={`https://glimmer.alwaysdata.net/static/images/${user.profile_pic || 'default.png'}`} 
+                            src={`/static/images/${user.profile_pic || 'default.png'}`} 
                             className="rounded-circle border border-white border-opacity-20" 
                             style={{ 
                                 width: '32px', 

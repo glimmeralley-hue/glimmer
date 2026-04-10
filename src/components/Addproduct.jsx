@@ -45,7 +45,7 @@ const AddProduct = () => {
         d.append("email", loggedInUser.email); // CRITICAL: This was missing!
 
         try {
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/add_product", d);
+            const res = await axios.post("/api/add_product", d);
             
             if (res.data.status === "success") {
                 navigate("/shop"); 

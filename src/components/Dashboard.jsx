@@ -17,7 +17,7 @@ const Dashboard = () => {
 
     const fetchAssets = async () => {
         try {
-            const res = await axios.get("https://glimmer.alwaysdata.net/api/get_products");
+            const res = await axios.get("/api/get_products");
             // Since backend now does ORDER BY id DESC, we just slice the first 6
             if (Array.isArray(res.data)) {
                 setProducts(res.data.slice(0, 6));
@@ -42,7 +42,7 @@ const Dashboard = () => {
             formdata.append("email", user.email);
             formdata.append("content", thought);
             formdata.append("music_url", musicUrl); // NEW: Sending music to backend
-            await axios.post("https://glimmer.alwaysdata.net/api/add_thought", formdata);
+            await axios.post("/api/add_thought", formdata);
             setThought("");
             setMusicUrl("");
             alert("SPILL_SENT");
@@ -63,7 +63,7 @@ const Dashboard = () => {
             formdata.append("phone", formattedPhone);
             formdata.append("amount", viewItem.product_cost);
 
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/mpesa_payment", formdata);
+            const res = await axios.post("/api/mpesa_payment", formdata);
 
             if (res.data.CheckoutRequestID) {
                 const checkoutID = res.data.CheckoutRequestID;
@@ -85,7 +85,7 @@ const Dashboard = () => {
 
         const poll = setInterval(async () => {
             try {
-                const res = await axios.get(`https://glimmer.alwaysdata.net/api/check_payment/${checkoutID}`);
+                const res = await axios.get(`/api/check_payment/${checkoutID}`);
                 if (res.data.status === "COMPLETED") {
                     clearInterval(poll);
                     setPaymentStatus("success");
@@ -143,7 +143,7 @@ const Dashboard = () => {
                                 products.map((p) => (
                                     <div key={p.id} className="glass-panel p-3 d-flex align-items-center justify-content-between">
                                         <div className="d-flex align-items-center gap-3">
-                                            <img src={`https://glimmer.alwaysdata.net/static/images/${p.product_photo}`} className="rounded-3" style={{ width: '60px', height: '60px', objectFit: 'cover' }} alt="" />
+                                            <img src={`/static/images/${p.product_photo}`} className="rounded-3" style={{ width: '60px', height: '60px', objectFit: 'cover' }} alt="" />
                                             <div>
                                                 <h6 className="fw-black mb-0 text-white">{p.product_name.toUpperCase()}</h6>
                                                 <p className="text-white opacity-40 mb-0" style={{ fontSize: '11px' }}>{p.product_description?.substring(0, 40) || 'NO DESCRIPTION'}</p>
@@ -178,7 +178,7 @@ const Dashboard = () => {
                             <>
                                 <h2 className="fw-black text-white mb-2">{viewItem.product_name.toUpperCase()}</h2>
                                 <p className="text-white opacity-50 small mb-4">{viewItem.product_description || 'NO DESCRIPTION AVAILABLE'}</p>
-                                <img src={`https://glimmer.alwaysdata.net/static/images/${viewItem.product_photo}`} className="rounded-4 mb-4 w-100" style={{ height: '200px', objectFit: 'cover' }} alt="" />
+                                <img src={`/static/images/${viewItem.product_photo}`} className="rounded-4 mb-4 w-100" style={{ height: '200px', objectFit: 'cover' }} alt="" />
 
                                 <div className="mb-4 text-center">
                                     <label className="fw-black small mb-2 text-white opacity-40">ENTER M-PESA NUMBER</label>

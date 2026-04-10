@@ -26,7 +26,7 @@ const Signup = () => {
             formdata.append("password", password);
             formdata.append("phone", phone);
 
-            const response = await axios.post("https://glimmer.alwaysdata.net/api/signup", formdata);
+            const response = await axios.post("/api/signup", formdata);
 
             setStatus({ type: "success", msg: "Account Created." });
             setLoading(false);

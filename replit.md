@@ -12,9 +12,11 @@ A React-based social commerce platform combining social media features with a di
 ## Architecture
 
 - **Frontend:** React 19 (Create React App), Bootstrap 5, React Router DOM v7
-- **Backend:** External Python/Flask API hosted at `https://glimmer.alwaysdata.net` (no local backend)
-- **Package Manager:** npm
+- **Backend:** Local Python/Flask API (`backend/app.py`) running on port 8000
+- **Database:** SQLite (`backend/glimmer.db`) — auto-created on first run
+- **Package Manager:** npm (frontend), pip (backend)
 - **Build Tool:** react-scripts (Create React App)
+- **Proxy:** CRA dev server proxies all `/api/*` and `/static/*` requests to `localhost:8000`
 
 ## Project Structure
 

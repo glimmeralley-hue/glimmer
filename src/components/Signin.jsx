@@ -20,7 +20,7 @@ const SignIn = () => {
 
         try {
             // Using your specified endpoint
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/signin", formData);
+            const res = await axios.post("/api/signin", formData);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             navigate("/dashboard");
         } catch (err) {

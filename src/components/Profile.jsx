@@ -23,7 +23,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`https://glimmer.alwaysdata.net/api/get_user/${targetEmail}`);
+            const res = await axios.get(`/api/get_user/${targetEmail}`);
             setProfileData(res.data);
             setBio(res.data.bio || "");
             setPhone(res.data.phone || "");
@@ -55,7 +55,7 @@ const Profile = () => {
 
         setLoading(true);
         try {
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/update_profile", formData);
+            const res = await axios.post("/api/update_profile", formData);
             if (res.data.status === "success") {
                 setMsg("AVATAR_UPDATED");
                 fetchProfileData(); // Refresh data to show new image
@@ -76,7 +76,7 @@ const Profile = () => {
             fd.append("phone", phone);
             fd.append("bio", bio);
 
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/update_profile", fd);
+            const res = await axios.post("/api/update_profile", fd);
 
             if (res.data.status === "success") {
                 // Important: Update LocalStorage so the whole app knows the new info
@@ -104,7 +104,7 @@ const Profile = () => {
                 {/* AVATAR SECTION */}
                 <div className="mb-4 position-relative d-inline-block">
                     <img 
-                        src={`https://glimmer.alwaysdata.net/static/images/${profileData.profile_pic || 'default.png'}`} 
+                        src={`/static/images/${profileData.profile_pic || 'default.png'}`} 
                         className="rounded-circle border border-2 border-white shadow-lg"
                         style={{ width: '130px', height: '130px', objectFit: 'cover', cursor: isOwnProfile ? 'pointer' : 'default' }}
                         alt="Profile"

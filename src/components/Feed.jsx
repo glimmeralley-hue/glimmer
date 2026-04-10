@@ -20,7 +20,7 @@ const Feed = () => {
 
     const fetchFeed = async () => {
         try {
-            const res = await axios.get("https://glimmer.alwaysdata.net/api/get_thoughts");
+            const res = await axios.get("/api/get_thoughts");
             setThoughts(Array.isArray(res.data) ? res.data : []);
         } catch (err) { 
             console.error("FEED_OFFLINE"); 
@@ -136,7 +136,7 @@ const Feed = () => {
                 fd.append("image", selectedFile);
             }
             
-            await axios.post("https://glimmer.alwaysdata.net/api/add_thought", fd);
+            await axios.post("/api/add_thought", fd);
             
             // Clean up
             setNewThought(""); 
@@ -158,7 +158,7 @@ const Feed = () => {
             const fd = new FormData();
             fd.append("thought_id", id);
             fd.append("email", user.email);
-            const res = await axios.post("https://glimmer.alwaysdata.net/api/toggle_clock", fd);
+            const res = await axios.post("/api/toggle_clock", fd);
             if (res.data.status === "success") fetchFeed(); 
         } catch (err) { console.error("CLOCK_ERR"); }
     };
@@ -169,7 +169,7 @@ const Feed = () => {
             const fd = new FormData();
             fd.append("id", id);
             fd.append("email", user.email);
-            await axios.post("https://glimmer.alwaysdata.net/api/delete_thought", fd);
+            await axios.post("/api/delete_thought", fd);
             fetchFeed();
         } catch (err) { console.error("DELETE_FAILED"); }
     };
@@ -181,7 +181,7 @@ const Feed = () => {
             fd.append("thought_id", thoughtId);
             fd.append("email", user.email);
             fd.append("content", replyText);
-            await axios.post("https://glimmer.alwaysdata.net/api/add_clapback", fd);
+            await axios.post("/api/add_clapback", fd);
             setReplyText(""); 
             setActiveReplyId(null); 
             fetchFeed();
@@ -194,7 +194,7 @@ const Feed = () => {
             const fd = new FormData();
             fd.append("id", replyId);
             fd.append("email", user.email);
-            await axios.post("https://glimmer.alwaysdata.net/api/delete_clapback", fd);
+            await axios.post("/api/delete_clapback", fd);
             fetchFeed();
         } catch (err) { console.error("REPLY_DELETE_FAILED"); }
     };
@@ -248,7 +248,7 @@ const Feed = () => {
                         <div key={t.id} className="glass-panel p-4 mb-5 border-start border-white border-4">
                             <div className="d-flex justify-content-between align-items-start mb-4">
                                 <Link to={`/profile/${t.user_email}`} className="d-flex align-items-center gap-3 text-decoration-none">
-                                    <img src={`https://glimmer.alwaysdata.net/static/images/${t.profile_pic || 'default.png'}`} className="rounded-circle border border-white" style={{ width: '45px', height: '45px', objectFit: 'cover' }} alt="" />
+                                    <img src={`/static/images/${t.profile_pic || 'default.png'}`} className="rounded-circle border border-white" style={{ width: '45px', height: '45px', objectFit: 'cover' }} alt="" />
                                     <div>
                                         <span className="text-white fw-black d-block">{t.username?.toUpperCase()}</span>
                                         <span className="text-white opacity-40 fw-black small">🤏🏽 {t.clock_count || 0} CLOCKS</span>
@@ -267,7 +267,7 @@ const Feed = () => {
                             {/* MUSIC PLAYER TRIGGERED HERE */}
                             {t.music_url && renderMusicPlayer(t.music_url)}
                             
-                            {t.image_url && <img src={`https://glimmer.alwaysdata.net/static/images/${t.image_url}`} className="w-100 rounded-4 mb-3" alt="Post" />}
+                            {t.image_url && <img src={`/static/images/${t.image_url}`} className="w-100 rounded-4 mb-3" alt="Post" />}
 
                             <div className="d-flex gap-4 border-top border-white border-opacity-10 pt-3">
                                 <button onClick={() => toggleClock(t.id)} className="btn btn-link p-0 text-white fw-black text-decoration-none">
