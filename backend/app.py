@@ -528,6 +528,103 @@ def delete_journal(journal_id):
     return jsonify({"message": "Deleted"})
 
 
+def admin_check(data):
+    email = data.get('email', '')
+    password = data.get('password', '')
+    admin_email = os.environ.get('ADMIN_EMAIL', '')
+    admin_pass = os.environ.get('ADMIN_MASTER_PASSWORD', '')
+    return email == admin_email and password == admin_pass
+
+@app.route('/api/admin/verify', methods=['POST'])
+def admin_verify():
+    data = request.get_json()
+    if admin_check(data):
+        return jsonify({'ok': True})
+    return jsonify({'ok': False, 'error': 'Access denied.'}), 403
+
+@app.route('/api/admin/users', methods=['POST'])
+def admin_users():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    conn = get_db()
+    try:
+        conn.execute("ALTER TABLE users ADD COLUMN suspended INTEGER DEFAULT 0")
+        conn.commit()
+    except Exception:
+        pass
+    rows = conn.execute("SELECT email, username, created_at, suspended FROM users ORDER BY created_at DESC").fetchall()
+    conn.close()
+    return jsonify({'users': [dict(r) for r in rows]})
+
+@app.route('/api/admin/products', methods=['POST'])
+def admin_products():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    conn = get_db()
+    rows = conn.execute("SELECT * FROM products ORDER BY created_at DESC").fetchall()
+    conn.close()
+    return jsonify({'products': [dict(r) for r in rows]})
+
+@app.route('/api/admin/spills', methods=['POST'])
+def admin_spills():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    conn = get_db()
+    rows = conn.execute("""
+        SELECT s.*, COUNT(c.id) as comment_count
+        FROM spills s LEFT JOIN comments c ON c.spill_id = s.id
+        GROUP BY s.id ORDER BY s.created_at DESC
+    """).fetchall()
+    conn.close()
+    return jsonify({'spills': [dict(r) for r in rows]})
+
+@app.route('/api/admin/suspend_user', methods=['POST'])
+def admin_suspend_user():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    target = data.get('target_email')
+    suspend = 1 if data.get('suspend') else 0
+    conn = get_db()
+    try:
+        conn.execute("ALTER TABLE users ADD COLUMN suspended INTEGER DEFAULT 0")
+        conn.commit()
+    except Exception:
+        pass
+    conn.execute("UPDATE users SET suspended=? WHERE email=?", (suspend, target))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+@app.route('/api/admin/delete_product', methods=['POST'])
+def admin_delete_product():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    product_id = data.get('product_id')
+    conn = get_db()
+    conn.execute("DELETE FROM products WHERE id=?", (product_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+@app.route('/api/admin/delete_spill', methods=['POST'])
+def admin_delete_spill():
+    data = request.get_json()
+    if not admin_check(data):
+        return jsonify({'error': 'Forbidden'}), 403
+    spill_id = data.get('spill_id')
+    conn = get_db()
+    conn.execute("DELETE FROM spills WHERE id=?", (spill_id,))
+    conn.execute("DELETE FROM comments WHERE spill_id=?", (spill_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve_react(path):

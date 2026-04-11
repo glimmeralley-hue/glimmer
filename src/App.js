@@ -16,8 +16,9 @@ import Cart from './components/Cart';
 import Settings from './components/Settings';
 import Journal from './components/Journal';
 import Booths from './components/Booths';
+import AdminPortal from './components/AdminPortal';
 
-const noNavbarPaths = ['/', '/signin', '/signup', '/booths'];
+const noNavbarPaths = ['/', '/signin', '/signup', '/booths', '/admin-glimmer'];
 const fullWidthPaths = ['/messages', '/journal'];
 
 const AppContent = () => {
@@ -44,6 +45,7 @@ const AppContent = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/journal" element={<Journal />} />
+          <Route path="/admin-glimmer" element={<AdminPortal />} />
         </Routes>
       </div>
     </>

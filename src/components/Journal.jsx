@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import GestureLock, { hasGestureLock, isJournalUnlocked, lockJournal, clearGestureLock } from './GestureLock';
 
 const MOODS = ['✨', '😊', '😔', '😤', '💭', '🔥', '❤️', '🌙', '😂', '🫶'];
 
@@ -9,9 +10,14 @@ const Journal = () => {
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-
     const [form, setForm] = useState({ title: '', content: '', mood: '✨' });
     const [saving, setSaving] = useState(false);
+
+    const [lockState, setLockState] = useState(() => {
+        if (hasGestureLock() && !isJournalUnlocked()) return 'locked';
+        return 'open';
+    });
+    const [showSetup, setShowSetup] = useState(false);
 
     const fetchEntries = async () => {
         try {
@@ -25,8 +31,8 @@ const Journal = () => {
     };
 
     useEffect(() => {
-        if (user.email) fetchEntries();
-    }, []);
+        if (user.email && lockState === 'open') fetchEntries();
+    }, [lockState]);
 
     const startNew = () => {
         setSelected(null);
@@ -46,13 +52,9 @@ const Journal = () => {
         setSaving(true);
         try {
             if (selected) {
-                await axios.put(`/api/update_journal/${selected.id}`, {
-                    ...form, user_email: user.email,
-                });
+                await axios.put(`/api/update_journal/${selected.id}`, { ...form, user_email: user.email });
             } else {
-                await axios.post('/api/add_journal', {
-                    ...form, user_email: user.email,
-                });
+                await axios.post('/api/add_journal', { ...form, user_email: user.email });
             }
             await fetchEntries();
             setIsEditing(false);
@@ -77,36 +79,96 @@ const Journal = () => {
         }
     };
 
+    const handleLockNow = () => {
+        lockJournal();
+        setLockState('locked');
+    };
+
+    const handleEnableLock = () => setShowSetup(true);
+
+    const handleDisableLock = () => {
+        if (window.confirm('Remove gesture lock from your journal?')) {
+            clearGestureLock();
+            setLockState('open');
+        }
+    };
+
     const formatDate = (str) => {
         if (!str) return '';
         const d = new Date(str.replace(' ', 'T') + 'Z');
         return d.toLocaleDateString('en-KE', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
     };
 
+    if (lockState === 'locked') {
+        return (
+            <GestureLock
+                mode="verify"
+                onUnlock={() => setLockState('open')}
+            />
+        );
+    }
+
+    if (showSetup) {
+        return (
+            <GestureLock
+                mode="setup"
+                onSetup={() => { setShowSetup(false); setLockState('open'); }}
+                onCancel={() => setShowSetup(false)}
+            />
+        );
+    }
+
     return (
         <div style={{ height: 'calc(100vh - 80px)', display: 'flex', overflow: 'hidden' }}>
             {/* LEFT SIDEBAR */}
             <div style={{
-                width: '300px',
-                minWidth: '300px',
+                width: '300px', minWidth: '300px',
                 borderRight: '1px solid rgba(255,255,255,0.08)',
-                display: 'flex',
-                flexDirection: 'column',
+                display: 'flex', flexDirection: 'column',
                 background: 'rgba(255,255,255,0.01)',
             }}>
                 {/* Header */}
-                <div className="p-4 border-bottom border-white border-opacity-10 d-flex align-items-center justify-content-between">
-                    <div>
-                        <p className="mb-0 fw-black text-white" style={{ fontSize: '10px', letterSpacing: '3px', opacity: 0.4 }}>PRIVATE</p>
-                        <h5 className="mb-0 fw-black text-white" style={{ letterSpacing: '-0.5px' }}>JOURNAL</h5>
+                <div className="p-4 border-bottom border-white border-opacity-10">
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p className="mb-0 fw-black text-white" style={{ fontSize: '10px', letterSpacing: '3px', opacity: 0.4 }}>PRIVATE</p>
+                            <h5 className="mb-0 fw-black text-white" style={{ letterSpacing: '-0.5px' }}>JOURNAL</h5>
+                        </div>
+                        <button
+                            onClick={startNew}
+                            className="btn btn-sm fw-black"
+                            style={{ background: '#fff', color: '#000', fontSize: '11px', borderRadius: '8px', padding: '6px 12px' }}
+                        >
+                            + NEW
+                        </button>
                     </div>
-                    <button
-                        onClick={startNew}
-                        className="btn btn-sm fw-black"
-                        style={{ background: '#fff', color: '#000', fontSize: '11px', borderRadius: '8px', padding: '6px 12px' }}
-                    >
-                        + NEW
-                    </button>
+
+                    {/* Lock controls */}
+                    <div className="d-flex gap-2 flex-wrap">
+                        {hasGestureLock() ? (
+                            <>
+                                <button
+                                    onClick={handleLockNow}
+                                    style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '9px', fontWeight: '900', letterSpacing: '1.5px', padding: '5px 10px', borderRadius: '20px', cursor: 'pointer' }}
+                                >
+                                    🔒 LOCK NOW
+                                </button>
+                                <button
+                                    onClick={handleDisableLock}
+                                    style={{ background: 'transparent', border: '1px solid rgba(255,50,50,0.2)', color: 'rgba(255,100,100,0.7)', fontSize: '9px', fontWeight: '900', letterSpacing: '1.5px', padding: '5px 10px', borderRadius: '20px', cursor: 'pointer' }}
+                                >
+                                    REMOVE LOCK
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                onClick={handleEnableLock}
+                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)', fontSize: '9px', fontWeight: '900', letterSpacing: '1.5px', padding: '5px 10px', borderRadius: '20px', cursor: 'pointer' }}
+                            >
+                                🔓 SET GESTURE LOCK
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Entry list */}
@@ -123,8 +185,7 @@ const Journal = () => {
                             key={entry.id}
                             onClick={() => openEntry(entry)}
                             style={{
-                                padding: '16px 20px',
-                                cursor: 'pointer',
+                                padding: '16px 20px', cursor: 'pointer',
                                 borderBottom: '1px solid rgba(255,255,255,0.05)',
                                 background: selected?.id === entry.id ? 'rgba(255,255,255,0.06)' : 'transparent',
                                 transition: 'background 0.15s ease',
@@ -152,7 +213,6 @@ const Journal = () => {
             {/* RIGHT PANEL */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {isEditing ? (
-                    /* EDITOR */
                     <form onSubmit={handleSave} style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '40px 48px', overflow: 'auto' }}>
                         <div className="d-flex align-items-center justify-content-between mb-5">
                             <button
@@ -173,23 +233,18 @@ const Journal = () => {
                             </button>
                         </div>
 
-                        {/* Mood */}
                         <div className="mb-4">
                             <p className="text-white fw-black mb-2" style={{ fontSize: '10px', letterSpacing: '3px', opacity: 0.4 }}>MOOD</p>
                             <div className="d-flex gap-2 flex-wrap">
                                 {MOODS.map(m => (
                                     <button
-                                        key={m}
-                                        type="button"
+                                        key={m} type="button"
                                         onClick={() => setForm(f => ({ ...f, mood: m }))}
                                         style={{
                                             fontSize: '20px',
                                             background: form.mood === m ? 'rgba(255,255,255,0.15)' : 'transparent',
                                             border: form.mood === m ? '1px solid rgba(255,255,255,0.3)' : '1px solid transparent',
-                                            borderRadius: '8px',
-                                            padding: '4px 8px',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.15s ease',
+                                            borderRadius: '8px', padding: '4px 8px', cursor: 'pointer', transition: 'all 0.15s ease',
                                         }}
                                     >
                                         {m}
@@ -198,7 +253,6 @@ const Journal = () => {
                             </div>
                         </div>
 
-                        {/* Title */}
                         <input
                             type="text"
                             className="form-control border-0 bg-transparent fw-black text-white mb-3 px-0"
@@ -208,7 +262,6 @@ const Journal = () => {
                             style={{ fontSize: '1.8rem', letterSpacing: '-1px', boxShadow: 'none' }}
                         />
 
-                        {/* Content */}
                         <textarea
                             className="form-control border-0 bg-transparent text-white px-0"
                             placeholder="Write your thoughts here..."
@@ -219,7 +272,6 @@ const Journal = () => {
                         />
                     </form>
                 ) : selected ? (
-                    /* VIEW ENTRY */
                     <div style={{ flex: 1, padding: '40px 48px', overflowY: 'auto' }}>
                         <div className="d-flex align-items-center justify-content-between mb-5">
                             <button
@@ -258,7 +310,6 @@ const Journal = () => {
                         </p>
                     </div>
                 ) : (
-                    /* EMPTY STATE */
                     <div className="d-flex align-items-center justify-content-center h-100">
                         <div className="text-center">
                             <div style={{ fontSize: '48px', marginBottom: '16px' }}>📓</div>
