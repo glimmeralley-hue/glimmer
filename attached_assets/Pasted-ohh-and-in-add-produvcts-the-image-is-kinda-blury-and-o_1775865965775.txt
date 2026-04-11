@@ -1,0 +1,42 @@
+ohh and in add produvcts,the image is kinda blury and over zoomed in preview,also make sure the make payment section works,also when i add a product it reirects me to a blank page,in feed there should be an optipn like a mini navbar to switch between feed for products and the casual feed for posts,and then a side button to add a spill so you can remove the big spill ything and minimize it for more space,and also the mpesa part,i created a sandbox account,api keys for mpesa for testing and stuff but you might not have picked it up,also when i tap on someones profile and feed i want to be able to get a screen preview of it.I also think there should be booths,say,when you sign in,you choose if you want to use the app for commercial use or social interactions or self growth,these three different ones lead you to three different versions of the app,comnmercial use leads to a version for messages,cart,shop and add products(+list),personal use includes feed,messages,journal and cart,shop then self growth has two modes,restricted mode and free mode,restricted has journal,a new study section with custom timer optipns,journal with a calendar for tab keeping ,with daily affirmations and a progress tracker plus a body health section for work outs,exercise and meal planners. The free mode hs everything restricted mode has,but has a sidebar for messages and feed too.When displayed with there three different booths after sign in,they should be in scroll card mode like the way photo dumps in instagram are arranged and should each have short descriptions of each then you swipe to see the next one.At the end,youre told regardless of the one you pick there is an option to change in settings which you will build too.And sorry for the overload,the final things I require,keep all API keys and secrets on the back end,use repilit secrets for all credentials,sanitize all user inputs with DOM purify, to prevent XSS,implement replit Auth for log ins,avoid dngerously set inner html,secure cookies by setting them as http only,secure and samesite=strict and adda content security policy header that allows only scripts of my own from my own domain.Use an ORM for databases like drizzle to prevent sql injection and once compiled,run a security scan tfor privacy and security affirmations.want to delete the current MySQL setup and switch to the built-in Replit PostgreSQL database. Please:
+Initialize the Replit SQL database.
+Use Drizzle ORM to define my tables and handle queries.
+Update my React/Node logic to use this new database for user data and Google Login sessions.make sure please that the columns are in match to the initial one in terms of column names and names of other things unless encrypted by security reasons to prevent mismatch.THANKS REPLIT,FOR EVERYTHING.If you can also make the feed appear in an algorithm format that would be nice. AND if you could also show me where the database is that would be really nice. also another quick thing,free mode houldnt have study section.IN study section also,you should be able to create a notes section with custom study outlines for different majors.You can add your pictures of study stuff,ALso diversify the theme options in terms of light and dark. And the time stamps for messages are a bit off.. and profiles of commenters should also show,and be able to be replied to.and a gesture lock optipn for the journal section,like a pad. you create a gesture and thats the custom password. You can incoporate external APIs for any of the external features Ive requested.Also an option to unsend messages please.AND AFTER ALL THAT,PUSH THE CODE TO GITHUB.obviouslty the restricted ,free and evetry other booths have settings too.Integrate the IntaSend Python SDK into my Flask backend.
+​Create a POST endpoint /pay that triggers an M-Pesa STK Push using the user's phone number and amount.
+​Use my IntaSend Publishable Key and Secret Key from the Secrets tab.
+​Set up a redirect or status check so the React frontend knows when the payment is 'COMPLETED'.
+​Ensure the database updates the user's 'premium_status' to true upon a successful transaction."want to fully replace my old custom M-Pesa payment module with a clean IntaSend integration. Please:
+​Delete the old payment files/functions so they don't clutter the codebase.
+​Install the intasend-python SDK.
+​Build a new intasend_wrapper.py that handles the STK push and transaction status checks using the SDK.
+​Ensure the React frontend is updated to point to this new, clean backend flow. I want to add two revenue streams to my marketplace:
+​Commission Split: When a transaction happens, use the IntaSend Split Payment feature. Set my commission to 10% and send the rest to the seller's sub-account.
+​Listing Fee: Create an endpoint where sellers pay a small flat fee via M-Pesa to list a new item,as an ad,to feed algorithmsay 5000 bi aannually. The item should only appear in the marketplace after the payment is confirmed. Same price for a verification sellers acvcount tier,payed yearly for a credivbility badge.Role: Expert Full-Stack Developer.
+Task: Build a high-security Admin Dashboard for "Glimmer" that grants me "God Mode" over all sellers and transactions.
+​1. Secure Authentication:
+​Define an Admin Role in the database.
+​Hardcode my specific User ID/Email as the Master Admin so no one else can ever access this route.
+​Create a protected React route at /admin-master-control that only I can see.
+​2. Seller & Product "Overrun":
+​Build a table that lists all registered Sellers. Add a "Suspend Seller" button that instantly hides their profile and all their products from the public.
+​Build a "Global Product Manager" view. Add a "Delete Listing" button for every product so I can remove anything inappropriate or fraudulent.
+​3. Financial "Master Key" (IntaSend Wallet Integration):
+​Use the IntaSend Wallet API to display:
+​Total marketplace revenue.
+​My 10% commission balance.
+​Transaction Control: Create a view for all pending transactions. Add a "Force Refund" button next to each transaction that triggers the service.chargebacks.create() function in IntaSend to return money to a buyer if a seller scams them.
+​Freeze Funds: Implement logic that allows me to "Freeze" a seller's sub-account payout if their delivery status is disputed.for me as the creator when i sign in,Secret Configuration (Infrastructure):
+​Access the Replit Secrets tab. Create two keys: ADMIN_EMAIL (set to my email) and ADMIN_MASTER_PASSWORD (a secure string I will define).
+​Ensure the backend uses os.environ to fetch these safely.
+​2. Gate 1: Role-Based Access Control (RBAC):
+​Hardcode the "Admin" role to only apply to the user matching ADMIN_EMAIL.
+​Create a hidden, protected React route at /admin-portal-2026.
+​If a non-admin user hits this route, return a "404 Not Found" to keep it secret.
+​3. Gate 2: The Password Challenge:
+​Implement a secondary Password Overlay on the /admin-portal-2026 route.
+​Create a Flask endpoint /api/admin/verify that compares the input against the ADMIN_MASTER_PASSWORD secret using secure hashing (e.g., bcrypt).
+​The actual Dashboard UI must only reveal itself after this second password is confirmed.
+​4. Admin "God Mode" Features:
+​Seller Overrun: A table view of all sellers with a "SUSPEND" button (sets active=False in DB).
+​Product Management: A gallery view of all listings with a "DELETE" button for instant removal.
+​Financial Master Key: Integration with the IntaSend Wallet API to view total revenue, my 10% commission balance, and a "FORCE REFUND" button for disputed orders. though i think were gionna use a test sndbox version coz im 16
