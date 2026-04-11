@@ -89,7 +89,7 @@ const Booths = () => {
         const submode = localStorage.getItem('glimmer_submode');
         if (mode === 'commercial') navigate('/dashboard');
         else if (mode === 'personal') navigate('/feed');
-        else if (mode === 'selfgrowth') navigate('/journal');
+        else if (mode === 'selfgrowth') navigate('/selfgrowth');
         else navigate('/dashboard');
     };
 

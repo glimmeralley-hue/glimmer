@@ -528,6 +528,126 @@ def delete_journal(journal_id):
     return jsonify({"message": "Deleted"})
 
 
+
+# ── HEALTH LOGS ──────────────────────────────────────────────────────────────
+@app.route('/api/health_logs/<email>', methods=['GET'])
+def get_health_logs(email):
+    conn = get_db()
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS health_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                date TEXT NOT NULL,
+                water_glasses INTEGER DEFAULT 0,
+                sleep_hours REAL DEFAULT 7,
+                mood TEXT DEFAULT '😊',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_email, date)
+            )
+        """)
+        conn.commit()
+    except Exception:
+        pass
+    rows = conn.execute(
+        "SELECT * FROM health_logs WHERE user_email=? ORDER BY date DESC LIMIT 30",
+        (email,)
+    ).fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
+
+@app.route('/api/save_health_log', methods=['POST'])
+def save_health_log():
+    data = request.get_json()
+    conn = get_db()
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS health_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                date TEXT NOT NULL,
+                water_glasses INTEGER DEFAULT 0,
+                sleep_hours REAL DEFAULT 7,
+                mood TEXT DEFAULT '😊',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_email, date)
+            )
+        """)
+        conn.commit()
+    except Exception:
+        pass
+    conn.execute("""
+        INSERT INTO health_logs (user_email, date, water_glasses, sleep_hours, mood)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(user_email, date) DO UPDATE SET
+            water_glasses=excluded.water_glasses,
+            sleep_hours=excluded.sleep_hours,
+            mood=excluded.mood
+    """, (data['user_email'], data['date'], data['water_glasses'], data['sleep_hours'], data['mood']))
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+# ── AFFIRMATIONS ──────────────────────────────────────────────────────────────
+@app.route('/api/affirmations/<email>', methods=['GET'])
+def get_affirmations(email):
+    conn = get_db()
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS affirmations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+    except Exception:
+        pass
+    rows = conn.execute(
+        "SELECT * FROM affirmations WHERE user_email=? ORDER BY created_at DESC",
+        (email,)
+    ).fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
+
+@app.route('/api/add_affirmation', methods=['POST'])
+def add_affirmation():
+    data = request.get_json()
+    conn = get_db()
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS affirmations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+    except Exception:
+        pass
+    conn.execute(
+        "INSERT INTO affirmations (user_email, content) VALUES (?, ?)",
+        (data['user_email'], data['content'])
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+@app.route('/api/delete_affirmation/<int:affirmation_id>', methods=['DELETE'])
+def delete_affirmation(affirmation_id):
+    data = request.get_json()
+    conn = get_db()
+    conn.execute(
+        "DELETE FROM affirmations WHERE id=? AND user_email=?",
+        (affirmation_id, data['user_email'])
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'ok': True})
+
+
 def admin_check(data):
     email = data.get('email', '')
     password = data.get('password', '')

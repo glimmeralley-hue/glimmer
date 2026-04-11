@@ -14,11 +14,13 @@ const MODE_LINKS = {
         { to: '/journal', label: 'JOURNAL' },
     ],
     selfgrowth_restricted: [
+        { to: '/selfgrowth', label: 'GROW' },
         { to: '/journal', label: 'JOURNAL' },
     ],
     selfgrowth_free: [
-        { to: '/feed', label: 'FEED' },
+        { to: '/selfgrowth', label: 'GROW' },
         { to: '/journal', label: 'JOURNAL' },
+        { to: '/feed', label: 'FEED' },
         { to: '/messages', label: 'MESSAGES' },
     ],
     default: [

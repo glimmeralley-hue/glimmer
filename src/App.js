@@ -17,6 +17,7 @@ import Settings from './components/Settings';
 import Journal from './components/Journal';
 import Booths from './components/Booths';
 import AdminPortal from './components/AdminPortal';
+import SelfGrowth from './components/SelfGrowth';
 
 const noNavbarPaths = ['/', '/signin', '/signup', '/booths', '/admin-glimmer'];
 const fullWidthPaths = ['/messages', '/journal'];
@@ -46,6 +47,7 @@ const AppContent = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/admin-glimmer" element={<AdminPortal />} />
+          <Route path="/selfgrowth" element={<SelfGrowth />} />
         </Routes>
       </div>
     </>
