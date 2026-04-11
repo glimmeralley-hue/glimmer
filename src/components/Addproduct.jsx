@@ -48,7 +48,7 @@ const AddProduct = () => {
             const res = await axios.post("/api/add_product", d);
             
             if (res.data.status === "success") {
-                navigate("/shop"); 
+                navigate("/dashboard"); 
             }
         } catch (err) {
             setLoading(false);
@@ -129,7 +129,7 @@ const AddProduct = () => {
                          style={{ minHeight: '450px', border: '2px dashed rgba(255,255,255,0.1)', borderRadius: '25px' }}>
                         {preview ? (
                             <div className="w-100 animate-in">
-                                <img src={preview} className="rounded-4 mb-4 shadow-lg w-100" style={{ maxHeight: '280px', objectFit: 'cover' }} alt="preview" />
+                                <img src={preview} className="rounded-4 mb-4 shadow-lg" style={{ maxHeight: '280px', maxWidth: '100%', objectFit: 'contain', display: 'block', margin: '0 auto 1rem' }} alt="preview" />
                                 <h2 className="fw-black text-white mb-1" style={{ letterSpacing: '-1px' }}>{name.toUpperCase() || "ASSET_NAME"}</h2>
                                 <p className="text-white-50 small mb-3 px-4">{description || "Registering details to the ledger..."}</p>
                                 <h3 className="fw-bold text-info">KES {Number(cost).toLocaleString() || "0"}</h3>

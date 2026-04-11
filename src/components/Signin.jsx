@@ -22,7 +22,12 @@ const SignIn = () => {
             // Using your specified endpoint
             const res = await axios.post("/api/signin", formData);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/dashboard");
+            const mode = localStorage.getItem('glimmer_mode');
+            if (!mode) navigate("/booths");
+            else if (mode === 'commercial') navigate("/dashboard");
+            else if (mode === 'personal') navigate("/feed");
+            else if (mode === 'selfgrowth') navigate("/journal");
+            else navigate("/dashboard");
         } catch (err) {
             setLoading(false);
             setMsg("INVALID_CREDENTIALS");

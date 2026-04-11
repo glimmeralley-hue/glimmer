@@ -159,6 +159,33 @@ const Settings = () => {
                 </div>
             </div>
 
+            {/* MODE */}
+            <div className="mb-5">
+                <p className="text-white fw-black mb-4" style={{ fontSize: '11px', letterSpacing: '4px', opacity: 0.5, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+                    APP MODE
+                </p>
+                <div className="glass-panel p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <p className="mb-0 fw-black text-white" style={{ fontSize: '13px', letterSpacing: '1px' }}>
+                            {(() => {
+                                const mode = localStorage.getItem('glimmer_mode');
+                                const sub = localStorage.getItem('glimmer_submode');
+                                if (!mode) return 'NOT SET';
+                                if (mode === 'selfgrowth') return `SELF GROWTH · ${(sub || 'free').toUpperCase()}`;
+                                return mode.toUpperCase();
+                            })()}
+                        </p>
+                        <p className="mb-0 text-white fw-medium" style={{ opacity: 0.4, fontSize: '11px' }}>Current experience mode</p>
+                    </div>
+                    <button
+                        onClick={() => { localStorage.removeItem('glimmer_mode'); localStorage.removeItem('glimmer_submode'); window.location.href = '/booths'; }}
+                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '10px 20px', borderRadius: '8px', fontWeight: '900', fontSize: '10px', letterSpacing: '2px', cursor: 'pointer' }}
+                    >
+                        CHANGE MODE
+                    </button>
+                </div>
+            </div>
+
             {/* APP INFO */}
             <div>
                 <p className="text-white fw-black mb-4" style={{ fontSize: '11px', letterSpacing: '4px', opacity: 0.5, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>

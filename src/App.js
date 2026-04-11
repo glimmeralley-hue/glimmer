@@ -15,13 +15,14 @@ import Messages from './components/Messages';
 import Cart from './components/Cart';
 import Settings from './components/Settings';
 import Journal from './components/Journal';
+import Booths from './components/Booths';
 
-const noNavbarPaths = ['/', '/signin', '/signup'];
+const noNavbarPaths = ['/', '/signin', '/signup', '/booths'];
 const fullWidthPaths = ['/messages', '/journal'];
 
 const AppContent = () => {
   const location = useLocation();
-  const showNavbar = !noNavbarPaths.includes(location.pathname);
+  const showNavbar = !noNavbarPaths.some(p => location.pathname === p);
   const isFullWidth = fullWidthPaths.some(p => location.pathname.startsWith(p));
 
   return (
@@ -32,6 +33,7 @@ const AppContent = () => {
           <Route path="/" element={<Landing />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/booths" element={<Booths />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile/:email" element={<Profile />} />
           <Route path="/profile" element={<Profile />} />

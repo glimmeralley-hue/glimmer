@@ -28,11 +28,10 @@ const Signup = () => {
 
             const response = await axios.post("/api/signup", formdata);
 
+            localStorage.setItem("user", JSON.stringify(response.data.user || { email, username }));
             setStatus({ type: "success", msg: "Account Created." });
             setLoading(false);
-            
-            // Redirect after success
-            setTimeout(() => navigate('/signin'), 2000);
+            setTimeout(() => navigate('/booths'), 1200);
         } catch (err) {
             setLoading(false);
             setStatus({ type: "error", msg: err.response?.data?.message || "Signup Failed." });

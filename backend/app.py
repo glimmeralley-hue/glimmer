@@ -156,7 +156,10 @@ def signup():
             (username, email, hash_password(password), phone),
         )
         conn.commit()
-        return jsonify({"status": "success", "message": "Account created."}), 201
+        user = conn.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
+        user_data = dict(user) if user else {"username": username, "email": email, "phone": phone, "profile_pic": "default.png", "bio": ""}
+        user_data.pop("password", None)
+        return jsonify({"status": "success", "message": "Account created.", "user": user_data}), 201
     except sqlite3.IntegrityError:
         return jsonify({"message": "Email already registered."}), 409
     finally:
