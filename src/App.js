@@ -13,7 +13,6 @@ import AddProduct from './components/Addproduct';
 import Feed from './components/Feed';
 import Landing from './components/Landing';
 import Messages from './components/Messages';
-<<<<<<< HEAD
 import Cart from './components/Cart';
 import Settings from './components/Settings';
 import Journal from './components/Journal';
@@ -51,7 +50,6 @@ const AppContent = () => {
           <Route path="/admin-glimmer" element={<AdminPortal />} />
           <Route path="/selfgrowth" element={<SelfGrowth />} />
         </Routes>
-=======
 import Shop from './components/Shop';
 import Cart from './components/Cart';
 import Notifications from './components/Notifications';
@@ -91,7 +89,6 @@ const AppContent = () => {
 
 </Routes>
 
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
       </div>
       {shouldShowBottomNav && user.email && <BottomNav />}
     </>

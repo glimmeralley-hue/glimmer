@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-<<<<<<< HEAD
 import { useNavigate, useParams, Link } from "react-router-dom";
-=======
 import { useNavigate, useParams } from "react-router-dom";
 import API_URL from '../config/api';
 import { STATIC_URL } from '../config/constants';
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -29,11 +26,8 @@ const Profile = () => {
     const fetchProfileData = async () => {
         setLoading(true);
         try {
-<<<<<<< HEAD
             const res = await axios.get(`/api/get_user/${targetEmail}`);
-=======
             const res = await axios.get(`${API_URL}/get_profile/${targetEmail}`);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             setProfileData(res.data);
             setBio(res.data.bio || "");
             setPhone(res.data.phone || "");
@@ -65,11 +59,8 @@ const Profile = () => {
 
         setLoading(true);
         try {
-<<<<<<< HEAD
             const res = await axios.post("/api/update_profile", formData);
-=======
             const res = await axios.post(`${API_URL}/update_profile`, formData);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             if (res.data.status === "success") {
                 // Update localStorage with new profile picture if provided
                 if (res.data.profile_pic) {
@@ -98,11 +89,8 @@ const Profile = () => {
             fd.append("phone", phone);
             fd.append("bio", bio);
 
-<<<<<<< HEAD
             const res = await axios.post("/api/update_profile", fd);
-=======
             const res = await axios.post(`${API_URL}/update_profile`, fd);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
 
             if (res.data.status === "success") {
                 // Important: Update LocalStorage so the whole app knows the new info
@@ -132,11 +120,8 @@ const Profile = () => {
                 {/* AVATAR SECTION */}
                 <div className="mb-4 position-relative d-inline-block">
                     <img 
-<<<<<<< HEAD
                         src={`/static/images/${profileData.profile_pic || 'default.png'}`} 
-=======
                         src={`${STATIC_URL}/${profileData.profile_pic || 'default.png'}?t=${Date.now()}`}
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
                         className="rounded-circle border border-2 border-white shadow-lg"
                         style={{ width: '130px', height: '130px', objectFit: 'cover', cursor: isOwnProfile ? 'pointer' : 'default' }}
                         alt="Profile"

@@ -27,14 +27,12 @@ const Signup = () => {
             formdata.append("password", password);
             formdata.append("phone", phone);
 
-<<<<<<< HEAD
             const response = await axios.post("/api/signup", formdata);
 
             localStorage.setItem("user", JSON.stringify(response.data.user || { email, username }));
             setStatus({ type: "success", msg: "Account Created." });
             setLoading(false);
             setTimeout(() => navigate('/booths'), 1200);
-=======
             const res = await axios.post(`${API_URL}/signup`, formdata);
 
             if (res.data.status === "success") {
@@ -47,7 +45,6 @@ const Signup = () => {
                 setLoading(false);
                 setStatus({ type: "error", msg: res.data.message || "Signup Failed." });
             }
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         } catch (err) {
             setLoading(false);
             console.error("Signup Error:", err);

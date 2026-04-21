@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-<<<<<<< HEAD
 import { getCartCount } from '../utils/cart';
 
 const MODE_LINKS = {
@@ -53,21 +52,16 @@ const showAddProduct = () => {
     const mode = localStorage.getItem('glimmer_mode');
     return !mode || mode === 'commercial';
 };
-=======
 import axios from 'axios';
 import API_URL from '../config/api';
 import { STATIC_URL } from '../config/constants';
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-<<<<<<< HEAD
     const [cartCount, setCartCount] = useState(getCartCount());
     const [links] = useState(getNavLinks());
-=======
     const [unreadCount, setUnreadCount] = useState(0);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
 
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : {};
@@ -113,7 +107,6 @@ const Navbar = () => {
                     GLIMMER
                 </Link>
 
-<<<<<<< HEAD
                 <div className="d-flex align-items-center gap-3">
                     {links.map(link => (
                         <Link
@@ -156,7 +149,6 @@ const Navbar = () => {
                             src={`/static/images/${user.profile_pic || 'default.png'}`}
                             className="rounded-circle border border-white border-opacity-20"
                             style={{ width: '30px', height: '30px', objectFit: 'cover', cursor: 'pointer', transition: 'transform 0.2s ease' }}
-=======
                 <div className="d-flex align-items-center gap-4">
                     {/* NAVIGATION LINKS */}
                     <Link to="/feed" className={`${isActive('/feed')} fw-bold text-decoration-none small transition-all`}>
@@ -208,7 +200,6 @@ const Navbar = () => {
                             onLoad={() => {
                                 console.log("Navbar image loaded successfully");
                             }}
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
                             onClick={() => navigate(`/profile/${user.email}`)}
                             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}

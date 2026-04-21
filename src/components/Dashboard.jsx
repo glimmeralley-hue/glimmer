@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-<<<<<<< HEAD
 import { addToCart, getCart } from '../utils/cart';
 
 const Dashboard = () => {
@@ -172,7 +171,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
-=======
 import API_URL from '../config/api';
 
 const Dashboard = () => {
@@ -245,7 +243,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         </div>
     );
 };

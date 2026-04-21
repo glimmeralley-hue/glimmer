@@ -23,7 +23,6 @@ const SignIn = () => {
 
         try {
             // Using your specified endpoint
-<<<<<<< HEAD
             const res = await axios.post("/api/signin", formData);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             const mode = localStorage.getItem('glimmer_mode');
@@ -32,7 +31,6 @@ const SignIn = () => {
             else if (mode === 'personal') navigate("/feed");
             else if (mode === 'selfgrowth') navigate("/journal");
             else navigate("/dashboard");
-=======
             const res = await axios.post(`${API_URL}/signin`, formData);
             
             console.log("Server response:", res.data);
@@ -46,7 +44,6 @@ const SignIn = () => {
                 console.log("Login failed - server response:", res.data);
                 setMsg(res.data.message || "INVALID_CREDENTIALS");
             }
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         } catch (err) {
             setLoading(false);
             console.error("Signin Error:", err);

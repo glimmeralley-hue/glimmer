@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-<<<<<<< HEAD
 import axios from 'axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -38,7 +37,6 @@ const Messages = () => {
         return () => { if (pollRef.current) clearInterval(pollRef.current); };
     }, [activeChat]);
 
-=======
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import io from 'socket.io-client';
@@ -202,12 +200,10 @@ const Messages = () => {
     };
 
     // Auto-scroll
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-<<<<<<< HEAD
     const fetchConversations = async () => {
         try {
             const res = await axios.get(`/api/get_conversations/${user.email}`);
@@ -422,7 +418,6 @@ const Messages = () => {
                     </div>
                 )}
             </div>
-=======
     useEffect(() => { fetchConversations(); }, []);
 
     const selectConversation = (conv) => {
@@ -590,7 +585,6 @@ const Messages = () => {
                     </div>
                 </div>
             )}
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         </div>
     );
 };

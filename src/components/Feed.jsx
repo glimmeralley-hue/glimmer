@@ -10,7 +10,6 @@ const Feed = () => {
     const [thoughts, setThoughts] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
     const [productsLoading, setProductsLoading] = useState(false);
 
     const [activeReplyId, setActiveReplyId] = useState(null);
@@ -18,14 +17,12 @@ const Feed = () => {
 
     const [showSpillModal, setShowSpillModal] = useState(false);
     const [newThought, setNewThought] = useState("");
-=======
     const [posting, setPosting] = useState(false);
     const [newThought, setNewThought] = useState("");
     const [activeReplyId, setActiveReplyId] = useState(null);
     const [replyText, setReplyText] = useState("");
     const [error, setError] = useState("");
     
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [musicUrl, setMusicUrl] = useState("");
@@ -40,7 +37,6 @@ const Feed = () => {
 
     const fetchFeed = async () => {
         try {
-<<<<<<< HEAD
             const res = await axios.get("/api/get_thoughts");
             const raw = Array.isArray(res.data) ? res.data : [];
             const scored = raw.map(t => ({
@@ -55,7 +51,6 @@ const Feed = () => {
             console.error("FEED_OFFLINE");
         } finally {
             setLoading(false);
-=======
             setError("");
             const res = await axios.get(`${API_URL}/get_thoughts`);
             setThoughts(Array.isArray(res.data) ? res.data : []);
@@ -64,7 +59,6 @@ const Feed = () => {
             setError("Failed to load feed. Please refresh."); 
         } finally { 
             setLoading(false); 
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         }
     };
 
@@ -93,7 +87,6 @@ const Feed = () => {
     const formatTime = (dateStr) => {
         console.log("formatTime called with:", dateStr);
         if (!dateStr) return "JUST NOW";
-<<<<<<< HEAD
         const date = new Date(dateStr.replace(' ', 'T') + 'Z');
         if (isNaN(date.getTime())) return "RECENT";
         const now = new Date();
@@ -104,7 +97,6 @@ const Feed = () => {
         const diffHrs = Math.floor(diffMins / 60);
         if (diffHrs < 24) return `${diffHrs}h AGO`;
         return date.toLocaleDateString('en-KE', { month: 'short', day: 'numeric' });
-=======
         
         // Handle different date formats from database
         let date;
@@ -143,7 +135,6 @@ const Feed = () => {
         });
         console.log("Returning:", result);
         return result;
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
     };
 
     const renderMusicPlayer = (url) => {
@@ -184,21 +175,16 @@ const Feed = () => {
     const handlePostSpill = async (e) => {
         e.preventDefault();
         if (!newThought.trim() && !selectedFile && !musicUrl.trim()) return;
-<<<<<<< HEAD
-=======
         
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         setPosting(true);
         try {
             const fd = new FormData();
             fd.append("email", user.email);
-<<<<<<< HEAD
             fd.append("content", newThought.trim() || " ");
             fd.append("music_url", musicUrl.trim() || "");
             if (selectedFile) fd.append("image", selectedFile);
             await axios.post("/api/add_thought", fd);
             setNewThought(""); setSelectedFile(null); setMusicUrl(""); setShowMusicInput(false);
-=======
             fd.append("content", newThought.trim() || " "); 
             fd.append("music_url", musicUrl.trim() || ""); 
             
@@ -214,20 +200,16 @@ const Feed = () => {
             setSelectedFile(null); 
             setMusicUrl(""); 
             setShowMusicInput(false);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             if (previewUrl) URL.revokeObjectURL(previewUrl);
             setPreviewUrl(null);
             if (fileInputRef.current) fileInputRef.current.value = null;
             setShowSpillModal(false);
             fetchFeed();
-<<<<<<< HEAD
         } catch (err) {
             alert("SPILL_FAILED");
-=======
         } catch (err) { 
             console.error("SPILL_FAILED", err);
             setError("Failed to post spill. Please try again.");
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         } finally {
             setPosting(false);
         }
@@ -236,17 +218,14 @@ const Feed = () => {
     const toggleClock = async (id) => {
         try {
             const fd = new FormData();
-<<<<<<< HEAD
             fd.append("thought_id", id); fd.append("email", user.email);
             await axios.post("/api/toggle_clock", fd);
             fetchFeed();
-=======
             fd.append("thought_id", id);
             fd.append("email", user.email);
             const formdata = fd;
             await axios.post(`${API_URL}/toggle_clock`, formdata);
             if (fd.data.status === "success") fetchFeed(); 
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         } catch (err) { console.error("CLOCK_ERR"); }
     };
 
@@ -265,15 +244,12 @@ const Feed = () => {
         if (!window.confirm("ERASE THIS SPILL?")) return;
         try {
             const fd = new FormData();
-<<<<<<< HEAD
             fd.append("id", id); fd.append("email", user.email);
             await axios.post("/api/delete_thought", fd);
-=======
             fd.append("id", id);
             fd.append("email", user.email);
             const formdata = fd;
             await axios.post(`${API_URL}/delete_thought`, formdata);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             fetchFeed();
         } catch (err) { console.error("DELETE_FAILED"); }
     };
@@ -282,11 +258,9 @@ const Feed = () => {
         if (!replyText.trim()) return;
         try {
             const fd = new FormData();
-<<<<<<< HEAD
             fd.append("thought_id", thoughtId); fd.append("email", user.email); fd.append("content", replyText);
             await axios.post("/api/add_clapback", fd);
             setReplyText(""); setActiveReplyId(null);
-=======
             fd.append("thought_id", thoughtId);
             fd.append("email", user.email);
             fd.append("content", replyText);
@@ -294,7 +268,6 @@ const Feed = () => {
             await axios.post(`${API_URL}/add_clapback`, formdata);
             setReplyText(""); 
             setActiveReplyId(null); 
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             fetchFeed();
         } catch (err) { console.error("CLAPBACK_FAILED"); }
     };
@@ -318,21 +291,17 @@ const Feed = () => {
         if (!window.confirm("DELETE THIS REPLY?")) return;
         try {
             const fd = new FormData();
-<<<<<<< HEAD
             fd.append("id", replyId); fd.append("email", user.email);
             await axios.post("/api/delete_clapback", fd);
-=======
             fd.append("id", replyId);
             fd.append("email", user.email);
             const formdata = fd;
             await axios.post(`${API_URL}/delete_clapback`, formdata);
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             fetchFeed();
         } catch (err) { console.error("REPLY_DELETE_FAILED"); }
     };
 
     return (
-<<<<<<< HEAD
         <div style={{ minHeight: '100vh', paddingBottom: '100px' }}>
             {/* TAB NAV */}
             <div style={{
@@ -361,7 +330,6 @@ const Feed = () => {
                                 {tab.label}
                             </button>
                         ))}
-=======
         <div className="container py-5">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
@@ -405,12 +373,10 @@ const Feed = () => {
                                 </button>
                             </div>
                         </form>
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
                     </div>
                 </div>
             </div>
 
-<<<<<<< HEAD
             <div className="container py-4">
                 <div style={{ maxWidth: '680px', margin: '0 auto' }}>
 
@@ -452,7 +418,6 @@ const Feed = () => {
                                                 </button>
                                             )}
                                         </div>
-=======
                     {/* ERROR MESSAGE */}
                     {error && (
                         <div className="alert alert-danger alert-dismissible fade show mb-4" role="alert" style={{ backgroundColor: 'rgba(220, 53, 69, 0.2)', borderColor: 'rgba(220, 53, 69, 0.3)' }}>
@@ -478,7 +443,6 @@ const Feed = () => {
                                     <div>
                                         <span className="text-white fw-black d-block">{t.username?.toUpperCase()}</span>
                                         <span className="text-white opacity-40 fw-black small">🤏🏽 {t.clock_count || 0} CLOCKS</span>
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
                                     </div>
 
                                     <p style={{ color: '#fff', fontWeight: '500', fontSize: '15px', lineHeight: '1.6', marginBottom: t.music_url || t.image_url ? '12px' : '16px' }}>
@@ -547,7 +511,6 @@ const Feed = () => {
                         </>
                     )}
 
-<<<<<<< HEAD
                     {/* ── PRODUCTS TAB ── */}
                     {activeTab === 'products' && (
                         <>
@@ -586,7 +549,6 @@ const Feed = () => {
                                                         KES {Number(p.product_cost).toLocaleString()}
                                                     </p>
                                                 </div>
-=======
                             <p className="text-white fw-medium mb-3 fs-5">{t.content}</p>
                             
                             {/* MUSIC PLAYER TRIGGERED HERE */}
@@ -653,7 +615,6 @@ const Feed = () => {
                                                         </button>
                                                     </div>
                                                 )}
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
                                             </div>
                                         </div>
                                     ))}

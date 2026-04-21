@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import axios from 'axios';
 import { getCart, removeFromCart, updateQuantity, clearCart, getCartTotal } from '../utils/cart';
 
@@ -196,7 +195,6 @@ const Cart = () => {
                     </div>
                 </div>
             )}
-=======
 import API_URL from '../config/api';
 import { STATIC_URL } from '../config/constants';
 
@@ -371,7 +369,6 @@ const Cart = () => {
                     </div>
                 )}
             </div>
->>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
         </div>
     );
 };
