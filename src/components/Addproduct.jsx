@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config/api';
 
 const AddProduct = () => {
     // 1. State Management
@@ -45,16 +46,26 @@ const AddProduct = () => {
         d.append("email", loggedInUser.email); // CRITICAL: This was missing!
 
         try {
+<<<<<<< HEAD
             const res = await axios.post("/api/add_product", d);
             
             if (res.data.status === "success") {
                 navigate("/dashboard"); 
+=======
+            const res = await axios.post(`${API_URL}/add_product`, d);
+            
+            if (res.data.status === "success") {
+                navigate("/shop"); 
+            } else {
+                setLoading(false);
+                console.error("ADD_PRODUCT_ERROR:", res.data);
+                alert(res.data.message || "UPLOAD_FAILED");
+>>>>>>> 3614aa344074cbe5c7f16c7cb67cd9fdc789732b
             }
         } catch (err) {
             setLoading(false);
             console.error("DATABASE_SYNC_ERROR:", err);
-            // This alert triggers if the DB columns don't match the 5 fields above
-            alert("UPLOAD_FAILED: Check database columns or restart Alwaysdata server.");
+            alert(err.response?.data?.message || "UPLOAD_FAILED");
         }
     };
 
